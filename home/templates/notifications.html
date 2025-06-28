@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}Notifications - Student Management System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2 fw-bold">
+        <i class="fas fa-bell me-2 text-primary"></i>
+        Notifications
+    </h1>
+</div>
+
+<div class="row">
+    <!-- Personal Notifications -->
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-primary text-white py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="fas fa-user me-2"></i>
+                    Personal Notifications
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                {% if personal_notifications %}
+                    {% for notification in personal_notifications %}
+                        <div class="card mb-3 border-start border-4 
+                            {% if notification.notification_type == 'exam' %}border-danger
+                            {% elif notification.notification_type == 'assignment' %}border-warning
+                            {% elif notification.notification_type == 'grade' %}border-success
+                            {% else %}border-info{% endif %}">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <h6 class="card-title fw-bold">
+                                            {% if notification.notification_type == 'exam' %}
+                                                <i class="fas fa-file-alt text-danger me-2"></i>
+                                            {% elif notification.notification_type == 'assignment' %}
+                                                <i class="fas fa-tasks text-warning me-2"></i>
+                                            {% elif notification.notification_type == 'grade' %}
+                                                <i class="fas fa-chart-line text-success me-2"></i>
+                                            {% else %}
+                                                <i class="fas fa-info-circle text-info me-2"></i>
+                                            {% endif %}
+                                            {{ notification.title }}
+                                        </h6>
+                                        <p class="card-text">{{ notification.message }}</p>
+                                        <small class="text-muted">
+                                            <i class="fas fa-clock me-1"></i>{{ notification.created_at|timesince }} ago
+                                            {% if notification.course %}
+                                                | <i class="fas fa-book me-1"></i>{{ notification.course.code }}
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                    <span class="badge fs-6 px-3 py-2
+                                        {% if notification.notification_type == 'exam' %}bg-danger
+                                        {% elif notification.notification_type == 'assignment' %}bg-warning
+                                        {% elif notification.notification_type == 'grade' %}bg-success
+                                        {% else %}bg-info{% endif %}">
+                                        {{ notification.get_notification_type_display }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-bell-slash fa-4x text-muted mb-3"></i>
+                        <h5 class="text-muted">No Personal Notifications</h5>
+                        <p class="text-muted">You don't have any personal notifications at the moment.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Global Notifications -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-info text-white py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="fas fa-globe me-2"></i>
+                    General Announcements
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                {% if global_notifications %}
+                    {% for notification in global_notifications %}
+                        <div class="card mb-3 border-0 bg-light">
+                            <div class="card-body p-3">
+                                <h6 class="card-title fw-semibold">{{ notification.title }}</h6>
+                                <p class="card-text small">{{ notification.message|truncatewords:20 }}</p>
+                                <small class="text-muted">
+                                    <i class="fas fa-clock me-1"></i>{{ notification.created_at|timesince }} ago
+                                </small>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-bullhorn fa-3x text-muted mb-3"></i>
+                        <h6 class="text-muted">No Announcements</h6>
+                        <p class="text-muted small">No general announcements available.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

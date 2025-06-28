@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - Student Management System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2 fw-bold">
+        <i class="fas fa-user me-2 text-primary"></i>
+        My Profile
+    </h1>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-primary text-white py-3">
+                <h5 class="mb-0 fw-bold">Update Profile Information</h5>
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label fw-semibold">First Name</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label fw-semibold">Last Name</label>
+                            {{ form.last_name }}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.email.id_for_label }}" class="form-label fw-semibold">Email Address</label>
+                        {{ form.email }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.phone.id_for_label }}" class="form-label fw-semibold">Phone Number</label>
+                        {{ form.phone }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.date_of_birth.id_for_label }}" class="form-label fw-semibold">Date of Birth</label>
+                        {{ form.date_of_birth }}
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.address.id_for_label }}" class="form-label fw-semibold">Address</label>
+                        {{ form.address }}
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-lg px-4">
+                        <i class="fas fa-save me-2"></i>
+                        Update Profile
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light py-3">
+                <h5 class="mb-0 fw-bold">Profile Summary</h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                        <i class="fas fa-user fa-3x text-white"></i>
+                    </div>
+                    <h5 class="mt-3 mb-0 fw-bold">{{ user.get_full_name }}</h5>
+                    <p class="text-muted">{{ student_profile.student_id }}</p>
+                </div>
+                
+                <div class="border-top pt-3">
+                    <table class="table table-borderless">
+                        <tr>
+                            <td class="fw-semibold">Student ID:</td>
+                            <td>{{ student_profile.student_id }}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold">Username:</td>
+                            <td>{{ user.username }}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold">Enrollment Date:</td>
+                            <td>{{ student_profile.enrollment_date|date:"M d, Y" }}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold">Current GPA:</td>
+                            <td>
+                                <span class="badge bg-success fs-6">{{ student_profile.get_gpa }}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold">Enrolled Courses:</td>
+                            <td>{{ student_profile.courses.count }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}Courses - Student Management System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2 fw-bold">
+        <i class="fas fa-book me-2 text-primary"></i>
+        Courses
+    </h1>
+</div>
+
+<div class="row">
+    <!-- Enrolled Courses -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-success text-white py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="fas fa-check-circle me-2"></i>
+                    My Enrolled Courses ({{ enrolled_courses.count }})
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                {% if enrolled_courses %}
+                    {% for course in enrolled_courses %}
+                        <div class="card mb-3 border">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <h6 class="card-title fw-bold">{{ course.code }} - {{ course.name }}</h6>
+                                        <p class="card-text text-muted mb-2">{{ course.description|truncatewords:15 }}</p>
+                                        <small class="text-muted d-block">
+                                            <i class="fas fa-user me-1"></i>{{ course.instructor }}
+                                        </small>
+                                        <small class="text-muted d-block">
+                                            <i class="fas fa-credit-card me-1"></i>{{ course.credits }} credits
+                                        </small>
+                                        <small class="text-muted d-block">
+                                            <i class="fas fa-clock me-1"></i>{{ course.schedule }}
+                                        </small>
+                                    </div>
+                                    <span class="badge bg-success fs-6 px-3 py-2">Enrolled</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-book fa-4x text-muted mb-3"></i>
+                        <h5 class="text-muted">No Enrolled Courses</h5>
+                        <p class="text-muted">You haven't enrolled in any courses yet.</p>
+                        <p class="text-muted">Browse available courses to get started!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Available Courses -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-primary text-white py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="fas fa-plus-circle me-2"></i>
+                    Available Courses ({{ available_courses.count }})
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                {% if available_courses %}
+                    {% for course in available_courses %}
+                        <div class="card mb-3 border">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1">
+                                        <h6 class="card-title fw-bold">{{ course.code }} - {{ course.name }}</h6>
+                                        <p class="card-text text-muted mb-2">{{ course.description|truncatewords:15 }}</p>
+                                        <small class="text-muted d-block">
+                                            <i class="fas fa-user me-1"></i>{{ course.instructor }}
+                                        </small>
+                                        <small class="text-muted d-block">
+                                            <i class="fas fa-credit-card me-1"></i>{{ course.credits }} credits
+                                        </small>
+                                        <small class="text-muted d-block">
+                                            <i class="fas fa-clock me-1"></i>{{ course.schedule }}
+                                        </small>
+                                    </div>
+                                    <div class="ms-3">
+                                        <a href="{% url 'enroll_course' course.id %}" class="btn btn-primary">
+                                            <i class="fas fa-plus me-1"></i>
+                                            Enroll
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-graduation-cap fa-4x text-muted mb-3"></i>
+                        <h5 class="text-muted">All Courses Enrolled</h5>
+                        <p class="text-muted">No more courses available for enrollment.</p>
+                        <p class="text-muted">You're enrolled in all available courses!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

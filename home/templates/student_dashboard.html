@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Student Management System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2 fw-bold">
+        <i class="fas fa-tachometer-alt me-2 text-primary"></i>
+        Dashboard
+    </h1>
+    <div class="text-muted">
+        Welcome back, <span class="fw-semibold text-primary">{{ user.get_full_name }}</span>!
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0 fw-bold">{{ enrolled_courses.count }}</h3>
+                        <p class="mb-0 opacity-75">Enrolled Courses</p>
+                    </div>
+                    <i class="fas fa-book fa-2x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0 fw-bold">{{ gpa }}</h3>
+                        <p class="mb-0 opacity-75">Current GPA</p>
+                    </div>
+                    <i class="fas fa-chart-line fa-2x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0 fw-bold">{{ recent_grades.count }}</h3>
+                        <p class="mb-0 opacity-75">Recent Grades</p>
+                    </div>
+                    <i class="fas fa-graduation-cap fa-2x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white border-0 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0 fw-bold">{{ notifications.count }}</h3>
+                        <p class="mb-0 opacity-75">Notifications</p>
+                    </div>
+                    <i class="fas fa-bell fa-2x opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Recent Grades -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="fas fa-chart-line me-2 text-primary"></i>
+                    Recent Grades
+                </h5>
+                <a href="{% url 'grades' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if recent_grades %}
+                    {% for grade in recent_grades %}
+                        <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-light rounded">
+                            <div>
+                                <h6 class="mb-1 fw-semibold">{{ grade.course.code }}</h6>
+                                <small class="text-muted">{{ grade.course.name }}</small>
+                            </div>
+                            <span class="badge fs-6 px-3 py-2
+                                {% if grade.grade == 'A+' or grade.grade == 'A' %}bg-success
+                                {% elif grade.grade == 'A-' or grade.grade == 'B+' or grade.grade == 'B' %}bg-primary
+                                {% elif grade.grade == 'B-' or grade.grade == 'C+' or grade.grade == 'C' %}bg-warning
+                                {% else %}bg-danger{% endif %}">
+                                {{ grade.grade }}
+                            </span>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No grades available yet.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Attendance Overview -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="fas fa-calendar-check me-2 text-primary"></i>
+                    Attendance Overview
+                </h5>
+                <a href="{% url 'attendance' %}" class="btn btn-sm btn-outline-primary">View Details</a>
+            </div>
+            <div class="card-body">
+                {% if attendance_data %}
+                    {% for data in attendance_data %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="fw-semibold">{{ data.course.code }}</span>
+                                <span class="badge bg-light text-dark">{{ data.percentage }}%</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar 
+                                    {% if data.percentage >= 80 %}bg-success
+                                    {% elif data.percentage >= 60 %}bg-warning
+                                    {% else %}bg-danger{% endif %}" 
+                                    style="width: {{ data.percentage }}%"></div>
+                            </div>
+                            <small class="text-muted">{{ data.present }}/{{ data.total }} classes attended</small>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No attendance data available.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Enrolled Courses -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="fas fa-book me-2 text-primary"></i>
+                    Enrolled Courses
+                </h5>
+                <a href="{% url 'courses' %}" class="btn btn-sm btn-outline-primary">Manage</a>
+            </div>
+            <div class="card-body">
+                {% if enrolled_courses %}
+                    {% for course in enrolled_courses %}
+                        <div class="mb-3 p-3 border rounded">
+                            <h6 class="mb-1 fw-semibold">{{ course.code }} - {{ course.name }}</h6>
+                            <small class="text-muted d-block">
+                                <i class="fas fa-user me-1"></i>{{ course.instructor }}
+                            </small>
+                            <small class="text-muted d-block">
+                                <i class="fas fa-credit-card me-1"></i>{{ course.credits }} credits | 
+                                <i class="fas fa-clock me-1"></i>{{ course.schedule }}
+                            </small>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-book fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No courses enrolled yet.</p>
+                        <a href="{% url 'courses' %}" class="btn btn-primary">Browse Courses</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Notifications -->
+    <div class="col-lg-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="fas fa-bell me-2 text-primary"></i>
+                    Recent Notifications
+                </h5>
+                <a href="{% url 'notifications' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if notifications %}
+                    {% for notification in notifications %}
+                        <div class="mb-3 p-3 border-start border-4 
+                            {% if notification.notification_type == 'exam' %}border-danger
+                            {% elif notification.notification_type == 'assignment' %}border-warning
+                            {% elif notification.notification_type == 'grade' %}border-success
+                            {% else %}border-info{% endif %} bg-light">
+                            <h6 class="mb-1 fw-semibold">{{ notification.title }}</h6>
+                            <p class="mb-1 small">{{ notification.message|truncatewords:15 }}</p>
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>{{ notification.created_at|timesince }} ago
+                            </small>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No notifications available.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
